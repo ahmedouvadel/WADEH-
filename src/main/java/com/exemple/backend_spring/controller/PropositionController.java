@@ -41,15 +41,38 @@ public class PropositionController {
         return ResponseEntity.ok(proposition);
     }
 
-    @PutMapping("/{id}")
+    /*@PutMapping("/{id}")
     public ResponseEntity<PropositionDTO> updateProposition(@PathVariable Long id, @RequestBody PropositionDTO propositionDTO) {
         PropositionDTO updatedProposition = propositionService.updateProposition(id, propositionDTO);
+        return ResponseEntity.ok(updatedProposition);
+    }*/
+
+    /*@DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProposition(@PathVariable Long id) {
+        propositionService.deleteProposition(id);
+        return ResponseEntity.noContent().build();
+    }*/
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PropositionDTO> updateProposition(
+            @PathVariable Long id,
+            @RequestParam("userId") Long userId,
+            @RequestBody PropositionDTO propositionDTO) {
+        PropositionDTO updatedProposition = propositionService.updateProposition(id, propositionDTO, userId);
         return ResponseEntity.ok(updatedProposition);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProposition(@PathVariable Long id) {
-        propositionService.deleteProposition(id);
+    public ResponseEntity<Void> deleteProposition(@PathVariable Long id, @RequestParam("userId") Long userId) {
+        propositionService.deleteProposition(id, userId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<PropositionDTO>> getPropositionsByUser(@PathVariable Long userId) {
+        List<PropositionDTO> propositions = propositionService.getPropositionsByUser(userId);
+        return ResponseEntity.ok(propositions);
+    }
+
+
 }
