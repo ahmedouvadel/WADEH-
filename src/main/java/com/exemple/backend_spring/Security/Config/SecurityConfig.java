@@ -24,6 +24,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
 
 import javax.crypto.spec.SecretKeySpec;
@@ -48,14 +49,6 @@ public class SecurityConfig {
             "/v3/api-docs/**"
     };
 
-    /*@Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager(){
-        UserDetails user1 = User.withUsername("dady").password(passwordEncoder().encode("123")).authorities("USER").build();
-        UserDetails admin = User.withUsername("ahmedou").password(passwordEncoder().encode("321")).authorities("USER","ADMIN").build();
-
-        return new InMemoryUserDetailsManager(user1,admin);
-    }*/
-
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -65,6 +58,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf->csrf.disable())
+                .cors(cors -> cors
+                        .configurationSource(request -> {
+                            CorsConfiguration corsConfig = new CorsConfiguration();
+                            corsConfig.addAllowedOrigin("*"); // Replace with React Native app's origin
+                            corsConfig.addAllowedHeader("*");
+                            corsConfig.addAllowedMethod("*");
+                            return corsConfig;
+                        })
+                )
                 .authorizeHttpRequests(ar->ar.requestMatchers(URL_LIST).permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oa->oa.jwt(Customizer.withDefaults()))
