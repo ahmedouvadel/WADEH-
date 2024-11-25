@@ -2,20 +2,17 @@ package com.exemple.backend_spring.controller;
 
 import com.exemple.backend_spring.dto.CommentDTO;
 import com.exemple.backend_spring.service.CommentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/comments")
 public class CommentController {
     private final CommentService commentService;
-
-    @Autowired
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
-    }
 
     @GetMapping
     public List<CommentDTO> getAllComments() {

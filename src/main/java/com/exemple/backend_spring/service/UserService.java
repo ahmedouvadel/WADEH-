@@ -25,7 +25,7 @@ public class UserService {
     public Optional<User> editUser (Long id, User userDetails) {
         return userRepository.findById(id).map(user -> {
             user.setUsername(userDetails.getUsername());
-            user.setNumber(userDetails.getNumber());
+            user.setUserprofile(userDetails.getUserprofile());
             user.setPassword(userDetails.getPassword());
             return userRepository.save(user);
         });
@@ -37,7 +37,7 @@ public class UserService {
 
     public Optional<User> loginUser (String number, String password) {
         return userRepository.findAll().stream()
-                .filter(user -> user.getNumber().equals(number) && user.getPassword().equals(password))
+                .filter(user -> user.getUserprofile().equals(number) && user.getPassword().equals(password))
                 .findFirst();
     }
 }

@@ -2,6 +2,7 @@ package com.exemple.backend_spring.controller;
 
 import com.exemple.backend_spring.dto.PropositionDTO;
 import com.exemple.backend_spring.service.PropositionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +13,12 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/propositions")
 public class PropositionController {
 
-    @Autowired
-    private PropositionService propositionService;
+
+    private final PropositionService propositionService;
 
     @PostMapping
     public ResponseEntity<PropositionDTO> createProposition(@RequestParam("file") MultipartFile file,
@@ -73,6 +75,20 @@ public class PropositionController {
         List<PropositionDTO> propositions = propositionService.getPropositionsByUser(userId);
         return ResponseEntity.ok(propositions);
     }
+
+    @PatchMapping("/{id}/validate")
+    public ResponseEntity<PropositionDTO> validateProposition(@PathVariable Long id) {
+        PropositionDTO updatedProposition = propositionService.validateProposition(id);
+        return ResponseEntity.ok(updatedProposition);
+    }
+
+    @GetMapping("/validated")
+    public ResponseEntity<List<PropositionDTO>> getValidatedPropositions() {
+        List<PropositionDTO> validatedPropositions = propositionService.getValidatedPropositions();
+        return ResponseEntity.ok(validatedPropositions);
+    }
+
+
 
 
 }

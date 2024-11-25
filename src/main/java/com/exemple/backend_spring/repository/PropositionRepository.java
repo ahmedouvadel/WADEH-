@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface PropositionRepository extends JpaRepository<Proposition, Long> {
     List<Proposition> findByUserId(Long userId);
-    // Méthodes personnalisées si nécessaire
+    List<Proposition> findByStatus(boolean status);
 }

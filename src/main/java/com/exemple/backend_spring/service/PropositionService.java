@@ -1,8 +1,10 @@
 package com.exemple.backend_spring.service;
 
+import com.exemple.backend_spring.Security.Repository.UserRepository;
 import com.exemple.backend_spring.dto.PropositionDTO;
 import com.exemple.backend_spring.model.Proposition;
 import com.exemple.backend_spring.repository.PropositionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,10 +19,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PropositionService {
 
-    @Autowired
-    private PropositionRepository propositionRepository;
+
+    private final PropositionRepository propositionRepository;
+    private final UserRepository userRepository;
 
     @Value("${upload.dir}") // Chemin du répertoire pour stocker les fichiers téléchargés
     private String uploadDir;
@@ -77,8 +81,22 @@ public class PropositionService {
                 .collect(Collectors.toList());
     }
 
+    public PropositionDTO validateProposition(Long id) {
+        Proposition proposition = propositionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Proposition not found"));
 
+        // Set status to true
+        proposition.setStatus(true);
 
+        Proposition updatedProposition = propositionRepository.save(proposition);
+        return mapToDTO(updatedProposition);
+    }
+
+    public List<PropositionDTO> getValidatedPropositions() {
+        return propositionRepository.findByStatus(true).stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
 
 
 
@@ -126,6 +144,11 @@ public class PropositionService {
         dto.setDocument(proposition.getDocument());
         dto.setStatus(proposition.isStatus());
         dto.setUserId(proposition.getUserId());
+
+        // Fetch user profile and set it in the DTO
+        userRepository.findById(proposition.getUserId()).ifPresent(user -> dto.setUserProfile(user.getUserprofile()));
+
         return dto;
     }
+
 }

@@ -44,7 +44,7 @@ public class UserController {
         // Create and set user properties
         User user = new User();
         user.setUsername(userDTO.getName());
-        user.setNumber(userDTO.getNumber());
+        user.setUserprofile(userDTO.getUserprofile());
         // Encode the password before saving
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         user.setPassword(encodedPassword);
@@ -102,7 +102,7 @@ public class UserController {
     public ResponseEntity<User> editUser (@PathVariable Long id, @RequestBody UserDTO userDTO) {
         User user = new User();
         user.setUsername(userDTO.getName());
-        user.setNumber(userDTO.getNumber());
+        user.setUserprofile(userDTO.getUserprofile());
         user.setPassword(userDTO.getPassword());
 
         Optional<User> updatedUser  = userService.editUser (id, user);
@@ -118,7 +118,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<User> loginUser (@RequestBody UserDTO userDTO) {
-        Optional<User> user = userService.loginUser (userDTO.getNumber(), userDTO.getPassword());
+        Optional<User> user = userService.loginUser (userDTO.getUserprofile(), userDTO.getPassword());
         return user.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(401).build()); // Unauthorized
     }

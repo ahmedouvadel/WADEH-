@@ -9,4 +9,6 @@ public class PropositionDTO {
     private String document;
     private boolean status;
     private Long userId;
+    private String userProfile; // Add this field for the user profile
+
 }
