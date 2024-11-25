@@ -59,7 +59,7 @@ public class ContentService {
         return contentDTO;
     }
 
-    public ContentDTO updateContent(Long id, ContentDTO contentDTO) {
+    /*public ContentDTO updateContent(Long id, ContentDTO contentDTO) {
         Content content = contentRepository.findById(id).orElse(null);
         if (content != null) {
             content.setTitle(contentDTO.getTitle());
@@ -69,7 +69,27 @@ public class ContentService {
             return contentDTO;
         }
         return null;
+    }*/
+
+    public ContentDTO updateContent(Long id, ContentDTO contentDTO) {
+        Content content = contentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Content not found"));
+
+        content.setTitle(contentDTO.getTitle());
+        content.setBody(contentDTO.getBody());
+        content.setCategory(ContentType.valueOf(contentDTO.getCategory().name()));
+
+        Content updatedContent = contentRepository.save(content);
+
+        ContentDTO updatedDTO = new ContentDTO();
+        updatedDTO.setId(updatedContent.getId());
+        updatedDTO.setTitle(updatedContent.getTitle());
+        updatedDTO.setBody(updatedContent.getBody());
+        updatedDTO.setCreatedDate(updatedContent.getCreatedDate());
+        updatedDTO.setCategory(updatedContent.getCategory());
+        return updatedDTO;
     }
+
 
     public void deleteContent(Long id) {
         contentRepository.deleteById(id);

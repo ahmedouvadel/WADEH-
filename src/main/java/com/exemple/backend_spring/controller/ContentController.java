@@ -2,20 +2,17 @@ package com.exemple.backend_spring.controller;
 
 import com.exemple.backend_spring.dto.ContentDTO;
 import com.exemple.backend_spring.service.ContentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/contents")
 public class ContentController {
     private final ContentService contentService;
-
-    @Autowired
-    public ContentController(ContentService contentService) {
-        this.contentService = contentService;
-    }
 
     @GetMapping
     public List<ContentDTO> getAllContents() {
