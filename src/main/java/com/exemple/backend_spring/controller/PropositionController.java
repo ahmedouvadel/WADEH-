@@ -55,14 +55,27 @@ public class PropositionController {
         return ResponseEntity.noContent().build();
     }*/
 
-    @PutMapping("/{id}")
+    /*@PutMapping("/{id}")
     public ResponseEntity<PropositionDTO> updateProposition(
             @PathVariable Long id,
             @RequestParam("userId") Long userId,
             @RequestBody PropositionDTO propositionDTO) {
         PropositionDTO updatedProposition = propositionService.updateProposition(id, propositionDTO, userId);
         return ResponseEntity.ok(updatedProposition);
+    }*/
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PropositionDTO> updateProposition(
+            @PathVariable Long id,
+            @RequestParam("userId") Long userId,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+
+        PropositionDTO updatedProposition = propositionService.updateProposition(id, userId, title, file);
+        return ResponseEntity.ok(updatedProposition);
     }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProposition(@PathVariable Long id, @RequestParam("userId") Long userId) {

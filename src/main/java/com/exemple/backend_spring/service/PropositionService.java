@@ -65,7 +65,7 @@ public class PropositionService {
         propositionRepository.deleteById(id);
     }
 
-    public PropositionDTO updateProposition(Long id, PropositionDTO propositionDTO, Long userId) {
+    /*public PropositionDTO updateProposition(Long id, PropositionDTO propositionDTO, Long userId) {
         validateOwnership(id, userId); // Ensure the user owns the proposition
         Proposition proposition = propositionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Proposition not found"));
@@ -73,7 +73,28 @@ public class PropositionService {
         proposition.setDocument(propositionDTO.getDocument());
         Proposition updatedProposition = propositionRepository.save(proposition);
         return mapToDTO(updatedProposition);
+    }*/
+
+    public PropositionDTO updateProposition(Long id, Long userId, String title, MultipartFile file) throws IOException {
+        validateOwnership(id, userId);
+
+        Proposition proposition = propositionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Proposition not found"));
+
+        if (title != null) {
+            proposition.setTitle(title);
+        }
+
+        if (file != null && !file.isEmpty()) {
+            String filePath = storeFile(file);
+            proposition.setDocument(filePath);
+        }
+
+        Proposition updatedProposition = propositionRepository.save(proposition);
+        return mapToDTO(updatedProposition);
     }
+
+
 
     public List<PropositionDTO> getPropositionsByUser(Long userId) {
         return propositionRepository.findByUserId(userId).stream()
