@@ -70,10 +70,12 @@ public class CommentService {
         return mapToDTO(updatedComment);
     }
 
-    public void deleteComment(Long id, Long userId) {
-        validateOwnership(id, userId);
-        commentRepository.deleteById(id);
+    public void deleteComment(Long id) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comment not found"));
+        commentRepository.delete(comment);
     }
+
 
     private CommentDTO mapToDTO(Comment comment) {
         CommentDTO dto = new CommentDTO();
