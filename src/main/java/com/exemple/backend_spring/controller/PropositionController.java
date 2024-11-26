@@ -48,6 +48,17 @@ public class PropositionController {
         return ResponseEntity.ok(proposition);
     }
 
+    /*@PutMapping("/{id}")
+    public ResponseEntity<PropositionDTO> updateProposition(
+            @PathVariable Long id,
+            @RequestParam("userId") Long userId,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+
+        PropositionDTO updatedProposition = propositionService.updateProposition(id, userId, title, file);
+        return ResponseEntity.ok(updatedProposition);
+    }*/
+
     @PutMapping("/{id}")
     public ResponseEntity<PropositionDTO> updateProposition(
             @PathVariable Long id,
@@ -58,6 +69,7 @@ public class PropositionController {
         PropositionDTO updatedProposition = propositionService.updateProposition(id, userId, title, file);
         return ResponseEntity.ok(updatedProposition);
     }
+
 
     @GetMapping("/download/{fileName}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
@@ -84,10 +96,11 @@ public class PropositionController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProposition(@PathVariable Long id, @RequestParam("userId") Long userId) {
-        propositionService.deleteProposition(id, userId);
+    public ResponseEntity<Void> deleteProposition(@PathVariable Long id) {
+        propositionService.deleteProposition(id);
         return ResponseEntity.noContent().build();
     }
+
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<PropositionDTO>> getPropositionsByUser(@PathVariable Long userId) {
