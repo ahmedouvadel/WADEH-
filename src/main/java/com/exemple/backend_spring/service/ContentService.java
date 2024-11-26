@@ -78,17 +78,11 @@ public class ContentService {
         content.setTitle(contentDTO.getTitle());
         content.setBody(contentDTO.getBody());
         content.setCategory(ContentType.valueOf(contentDTO.getCategory().name()));
+        content = contentRepository.save(content);
 
-        Content updatedContent = contentRepository.save(content);
-
-        ContentDTO updatedDTO = new ContentDTO();
-        updatedDTO.setId(updatedContent.getId());
-        updatedDTO.setTitle(updatedContent.getTitle());
-        updatedDTO.setBody(updatedContent.getBody());
-        updatedDTO.setCreatedDate(updatedContent.getCreatedDate());
-        updatedDTO.setCategory(updatedContent.getCategory());
-        return updatedDTO;
+        return mapToDTO(content);
     }
+
 
 
     public void deleteContent(Long id) {
@@ -108,5 +102,26 @@ public class ContentService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    // Convert entity to DTO
+    private ContentDTO mapToDTO(Content content) {
+        ContentDTO dto = new ContentDTO();
+        dto.setId(content.getId());
+        dto.setTitle(content.getTitle());
+        dto.setBody(content.getBody());
+        dto.setCreatedDate(content.getCreatedDate());
+        dto.setCategory(content.getCategory());
+        return dto;
+    }
+
+    // Convert DTO to entity
+    private Content mapToEntity(ContentDTO dto) {
+        Content content = new Content();
+        content.setTitle(dto.getTitle());
+        content.setBody(dto.getBody());
+        content.setCategory(ContentType.valueOf(dto.getCategory().name()));
+        content.setCreatedDate(dto.getCreatedDate());
+        return content;
     }
 }

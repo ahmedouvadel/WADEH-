@@ -4,6 +4,7 @@ import com.exemple.backend_spring.dto.ContentDTO;
 import com.exemple.backend_spring.service.ContentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,8 +31,9 @@ public class ContentController {
     }
 
     @PutMapping("/{id}")
-    public ContentDTO updateContent(@PathVariable Long id, @RequestBody ContentDTO contentDTO) {
-        return contentService.updateContent(id, contentDTO);
+    public ResponseEntity<ContentDTO> updateContent(@PathVariable Long id, @RequestBody ContentDTO contentDTO) {
+        ContentDTO updatedContent = contentService.updateContent(id, contentDTO);
+        return ResponseEntity.ok(updatedContent);
     }
 
     @DeleteMapping("/{id}")

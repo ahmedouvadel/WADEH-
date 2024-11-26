@@ -8,4 +8,6 @@ public class CommentDTO {
     private String text;
     private Long userId; // Référence à l'utilisateur
     private Long contentId; // Référence au contenu
+    private String userProfile; // Add userProfile to DTO
+
 }

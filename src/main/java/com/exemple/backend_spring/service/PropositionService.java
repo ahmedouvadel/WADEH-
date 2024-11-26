@@ -144,7 +144,7 @@ public class PropositionService {
         // Ensure the directory exists
         Path uploadPath = Paths.get(uploadDir);
         if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath); // Create directory if it doesn't exist
+            Files.createDirectories(uploadPath);
         }
 
         // Generate a unique file name
@@ -154,8 +154,9 @@ public class PropositionService {
         // Copy the file
         Files.copy(file.getInputStream(), destinationPath);
 
-        return destinationPath.toString(); // Return the stored file's path
+        return uniqueFileName; // Return only the file name
     }
+
 
 
     private PropositionDTO mapToDTO(Proposition proposition) {
