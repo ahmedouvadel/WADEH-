@@ -29,6 +29,9 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import static org.springframework.http.HttpMethod.*;
+import static org.springframework.http.HttpMethod.DELETE;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -40,6 +43,9 @@ public class SecurityConfig {
 
     private static final String[] URL_LIST = {
             "/api/auth/addUser",
+            "/api/propositions/**",
+            "/api/contents/**",
+            "/api/comments/**",
             "/api/auth/addRole",
             "/api/auth/addRoleToUser",
             "/api/users/register",
@@ -67,7 +73,9 @@ public class SecurityConfig {
                             return corsConfig;
                         })
                 )
-                .authorizeHttpRequests(ar->ar.requestMatchers(URL_LIST).permitAll()
+                .authorizeHttpRequests(req ->
+                        req.requestMatchers(URL_LIST)
+                                .permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oa->oa.jwt(Customizer.withDefaults()))
                 .userDetailsService(userDetailsServiceImpl)
