@@ -30,17 +30,56 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/users/")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
     private final AuthenticationManager authenticationManager;
     private final JwtEncoder jwtEncoder;
     private final UserService userService;
     private final RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
-    @PostMapping(path = "/register")
-    public Map<String, String> registerUser (UserDTO userDTO) {
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, String>> registerUser(@RequestBody UserDTO userDTO) {
+        // Validate input
+        if (userDTO.getName() == null || userDTO.getUserprofile() == null || userDTO.getPassword() == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "All fields are required"));
+        }
+
+        // Create a new user
+        User user = new User();
+        user.setUsername(userDTO.getName());
+        user.setUserprofile(userDTO.getUserprofile());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
+        // Set role (default to "USER" if not specified)
+        String roleName = userDTO.getRole() != null ? userDTO.getRole() : "USER";
+        Role role = roleRepository.findByRoleName(roleName).orElseThrow(() ->
+                new IllegalArgumentException("Role not found: " + roleName));
+        user.setRoleList(Collections.singletonList(role));
+
+        // Save the user
+        userService.registerUser(user);
+
+        // Respond with a success message
+        return ResponseEntity.ok(Map.of("message", "User registered successfully"));
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<User>> selectAllUsers() {
+        List<User> users = userService.selectAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser (@PathVariable Long id) {
+        userService.deleteUser (id);
+        return ResponseEntity.noContent().build();
+    }
+}
+
+   /* @PostMapping(path = "/register")
+    public Map<String, String> registerUser (UserDTO userDTO) {
         // Create and set user properties
         User user = new User();
         user.setUsername(userDTO.getName());
@@ -90,13 +129,9 @@ public class UserController {
         // Return the access token
         return Map.of("access-token", jwt);
     }
+/*
 
 
-    @GetMapping("/")
-    public ResponseEntity<List<User>> selectAllUsers() {
-        List<User> users = userService.selectAllUsers();
-        return ResponseEntity.ok(users);
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> editUser (@PathVariable Long id, @RequestBody UserDTO userDTO) {
@@ -110,11 +145,7 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser (@PathVariable Long id) {
-        userService.deleteUser (id);
-        return ResponseEntity.noContent().build();
-    }
+
 
     @PostMapping("/login")
     public ResponseEntity<User> loginUser (@RequestBody UserDTO userDTO) {
@@ -122,4 +153,5 @@ public class UserController {
         return user.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(401).build()); // Unauthorized
     }
-}
+}    */
+

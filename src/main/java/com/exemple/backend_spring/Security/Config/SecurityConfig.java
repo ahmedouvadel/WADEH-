@@ -48,7 +48,7 @@ public class SecurityConfig {
             "/api/comments/**",
             "/api/auth/addRole",
             "/api/auth/addRoleToUser",
-            "/api/users/register",
+            "/api/users/**",
             "/auth/login",
             "/auth/profile",
             "/swagger-ui/**",
